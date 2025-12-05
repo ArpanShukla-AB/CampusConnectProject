@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - CampusConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #184E77 0%, #1A759F 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .signup-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .signup-form-section {
+            padding: 60px 40px;
+        }
+
+        .signup-logo {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .signup-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #184E77;
+            text-align: center;
+        }
+
+        .signup-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #184E77;
+            box-shadow: 0 0 0 3px rgba(24, 78, 119, 0.1);
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #184E77 0%, #1A759F 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .signup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(24, 78, 119, 0.3);
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .terms-checkbox input {
+            margin-right: 8px;
+            cursor: pointer;
+            width: auto;
+            height: auto;
+        }
+
+        .terms-checkbox a {
+            color: #184E77;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        .login-link a {
+            color: #184E77;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .error-message {
+            color: #dc2626;
+            background: #fee2e2;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .success-message {
+            color: #059669;
+            background: #d1fae5;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #184E77;
+        }
+
+        .password-strength {
+            margin-top: 8px;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+        }
+
+        .strength-weak {
+            background: #dc2626;
+            width: 33%;
+        }
+
+        .strength-medium {
+            background: #f59e0b;
+            width: 66%;
+        }
+
+        .strength-strong {
+            background: #10b981;
+            width: 100%;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0 20px;
+            color: #999;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            margin: 0 12px;
+            font-size: 14px;
+        }
+
+        .google-signup-btn {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .google-signup-btn:hover {
+            border-color: #184E77;
+            background: #f8f9fa;
+        }
+
+        .google-icon {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%234285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="%2334A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="%23FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="%23EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>') no-repeat center;
+            background-size: contain;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #999;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: #184E77;
+            border-bottom-color: #184E77;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .signup-form-section {
+                padding: 40px 30px;
+            }
+
+            .tabs {
+                margin-bottom: 20px;
+            }
+
+            .tab-btn {
+                padding: 8px 15px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="signup-form-section">
+            <div class="signup-logo">🎓</div>
+            <h1 class="signup-title">Create Account</h1>
+            <p class="signup-subtitle">Join CampusConnect and start your learning journey</p>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('email')">Email Signup</button>
+                <button class="tab-btn" onclick="switchTab('google')">Google Signup</button>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+            <div class="success-message" id="successMessage"></div>
+
+            <!-- Email Signup Tab -->
+            <div id="email-tab" class="tab-content active">
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" placeholder="John Doe" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="college">College/University</label>
+                        <select id="college" name="college" required>
+                            <option value="">Select your college</option>
+                            <option value="RV College">RV College of Engineering</option>
+                            <option value="BMS College">BMS College of Engineering</option>
+                            <option value="PES University">PES University</option>
+                            <option value="MSRIT">MS Ramaiah Institute of Technology</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+                        <div class="password-strength">
+                            <div class="password-strength-bar" id="strengthBar"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                    </div>
+
+                    <div class="terms-checkbox">
+                        <input type="checkbox" id="terms" name="terms" required title="Accept terms">
+                        <label>
+                            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="signup-btn">Create Account</button>
+
+                    <div class="loading" id="loading">
+                        <p>Creating account...</p>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Google Signup Tab -->
+            <div id="google-tab" class="tab-content">
+                <div style="text-align: center; padding: 30px 0;">
+                    <h3 style="color: #333; margin-bottom: 20px; font-weight: 600;">Sign up with Google</h3>
+                    <div id="g_id_onload"
+                        data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+                        data-callback="handleGoogleSignUp">
+                    </div>
+                    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline"></div>
+                    
+                    <div id="googleSignupForm" style="display: none; margin-top: 20px;">
+                        <div class="form-group">
+                            <label for="googleCollege">College/University</label>
+                            <select id="googleCollege" required>
+                                <option value="">Select your college</option>
+                                <option value="RV College">RV College of Engineering</option>
+                                <option value="BMS College">BMS College of Engineering</option>
+                                <option value="PES University">PES University</option>
+                                <option value="MSRIT">MS Ramaiah Institute of Technology</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <button type="button" class="signup-btn" onclick="completeGoogleSignup()">Complete Signup</button>
+                    </div>
+
+                    <p style="color: #999; margin-top: 20px; font-size: 13px;">
+                        Google OAuth Client ID required. <br>
+                        <a href="https://console.cloud.google.com" target="_blank" style="color: #184E77;">Get your credentials here</a>
+                    </p>
+                </div>
+            </div>
+
+            <p class="login-link">
+                Already have an account? <a href="login.html">Sign in</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Email signup
+        const passwordInput = document.getElementById('password');
+        
+        // Password strength indicator
+        passwordInput.addEventListener('input', (e) => {
+            const password = e.target.value;
+            const strengthBar = document.getElementById('strengthBar');
+            
+            if (password.length === 0) {
+                strengthBar.className = 'password-strength-bar';
+            } else if (password.length < 6) {
+                strengthBar.className = 'password-strength-bar strength-weak';
+            } else if (password.length < 12 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+                strengthBar.className = 'password-strength-bar strength-medium';
+            } else {
+                strengthBar.className = 'password-strength-bar strength-strong';
+            }
+        });
+
+        document.getElementById('signupForm').addEventListener('submit', handleSignup);
+
+        async function handleSignup(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const college = document.getElementById('college').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            const loadingDiv = document.getElementById('loading');
+            
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            // Validation
+            if (password !== confirmPassword) {
+                errorDiv.textContent = 'Passwords do not match';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            if (password.length < 6) {
+                errorDiv.textContent = 'Password must be at least 6 characters';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            loadingDiv.style.display = 'block';
+
+            try {
+                const result = await registerUserAccount(email, password, name, college);
+                
+                if (result.success) {
+                    successDiv.textContent = result.message;
+                    successDiv.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
+                } else {
+                    errorDiv.textContent = result.message || 'Signup failed';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                errorDiv.textContent = error.message || 'An error occurred';
+                errorDiv.style.display = 'block';
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+
+        // Google OAuth Signup
+        let googleUserData = null;
+
+        window.handleGoogleSignUp = function(response) {
+            try {
+                // Decode JWT token from Google
+                const base64Url = response.credential.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+
+                googleUserData = JSON.parse(jsonPayload);
+                console.log('Google User:', googleUserData);
+
+                // Show college selection form
+                document.getElementById('googleSignupForm').style.display = 'block';
+
+            } catch (error) {
+                console.error('Google sign-up error:', error);
+                document.getElementById('errorMessage').textContent = 'Failed to process Google sign-up';
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        };
+
+        async function completeGoogleSignup() {
+            if (!googleUserData) {
+                document.getElementById('errorMessage').textContent = 'Please sign in with Google first';
+                document.getElementById('errorMessage').style.display = 'block';
+                return;
+            }
+
+            const college = document.getElementById('googleCollege').value;
+            
+            if (!college) {
+                document.getElementById('errorMessage').textContent = 'Please select a college';
+                document.getElementById('errorMessage').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+
+            try {
+                // Generate a random password for Google users
+                const randomPassword = Math.random().toString(36).slice(-12);
+                
+                const result = await registerUserAccount(
+                    googleUserData.email,
+                    randomPassword,
+                    googleUserData.name,
+                    college
+                );
+
+                if (result.success) {
+                    // Auto login after signup
+                    const loginResult = await authenticateUser(googleUserData.email, randomPassword);
+                    
+                    if (loginResult.success) {
+                        localStorage.setItem('authToken', loginResult.token);
+                        localStorage.setItem('user', JSON.stringify(loginResult.user));
+                        localStorage.setItem('googleUser', 'true');
+
+                        document.getElementById('successMessage').textContent = 'Account created successfully! Redirecting...';
+                        document.getElementById('successMessage').style.display = 'block';
+
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1500);
+                    }
+                } else {
+                    document.getElementById('errorMessage').textContent = result.message || 'Signup failed';
+                    document.getElementById('errorMessage').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('errorMessage').textContent = error.message || 'An error occurred';
+                document.getElementById('errorMessage').style.display = 'block';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        // Check if user is already logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('authToken')) {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>

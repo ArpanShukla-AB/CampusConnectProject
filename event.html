@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Events - CampusConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="auth.js"></script>
+    <style>
+        :root {
+            /* Page-specific mapping to global palette */
+            --premium-purple: #333D29;
+            --premium-indigo: #343A40;
+            --premium-teal: #43AA8B;
+            --premium-cyan: #1A759F;
+            --premium-pink: #C6AC8F;
+            --premium-orange: #CCA000;
+            --premium-gradient-1: linear-gradient(135deg, #184E77 0%, #1A759F 100%);
+            --premium-gradient-2: linear-gradient(135deg, #333D29 0%, #343A40 100%);
+            --premium-gradient-3: linear-gradient(135deg, #184E77 0%, #1A759F 100%);
+            --premium-gradient-4: linear-gradient(135deg, #161A1D 0%, #212529 100%);
+        }
+
+        body {
+            background-color: #184E77;
+        }
+
+        .premium-card {
+            background: #1A759F;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.1);
+            transition: all 0.3s ease;
+            color: #f8f9fa;
+        }
+
+        .premium-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(26, 117, 159, 0.3);
+        }
+
+        .premium-btn-primary {
+            background: var(--premium-gradient-1);
+            transition: all 0.3s ease;
+        }
+
+        .premium-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(26, 117, 159, 0.4);
+        }
+
+        .premium-btn-secondary {
+            background: var(--premium-gradient-3);
+            transition: all 0.3s ease;
+        }
+
+        .premium-btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(26, 117, 159, 0.4);
+        }
+
+        .gradient-text {
+            background: var(--premium-gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .premium-input {
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .premium-input:focus {
+            border-color: var(--premium-purple);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            outline: none;
+        }
+
+        .event-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .college-rv { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .college-bms { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; }
+        .college-pes { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+        .college-msrit { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; }
+        .college-other { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; }
+    </style>
+</head>
+<body class="vc-body">
+    <!-- Navigation -->
+    <nav class="vc-header sticky top-0 z-50 navbar-glow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center hover:opacity-80 transition-opacity">
+                        <img src="logo.png" alt="CampusConnect" class="h-14 w-14 logo-glow logo-shadow">
+                        <span class="ml-3 text-lg font-bold text-white hover:text-indigo-200 transition-colors logo-text-effect logo-text-shadow">CampusConnect</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-white/20 transition-colors">Home</a>
+                    <a href="index.html#/mentors" class="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-white/20 transition-colors">Mentors</a>
+                    <a href="event.html" class="px-4 py-2 rounded-md text-sm font-medium bg-white text-indigo-600 font-semibold">Events</a>
+                    <a href="index.html#/leaderboard" class="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-white/20 transition-colors">Leaderboard</a>
+                    <a href="postfeed.html" class="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-white/20 transition-colors">Post Feed</a>
+                    <button onclick="showSearchModal()" class="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-white/20 transition-colors flex items-center">
+                        <span class="mr-2">🔍</span> Search
+                    </button>
+                    <a href="profile.html" class="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-white/20 transition-colors">Profile</a>
+                    <div class="flex items-center space-x-2 ml-4 pl-4 border-l border-white/20">
+                        <span class="text-white text-sm" id="userName">Guest</span>
+                        <button onclick="logoutUser()" class="px-4 py-2 rounded-md text-sm font-medium text-white bg-red-500/20 hover:bg-red-500/40 transition-colors">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 vc-text-dark">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold gradient-text mb-4">📅 College Events</h1>
+            <p class="text-xl vc-minor-detail">Discover exciting events from colleges across the network</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+            <div class="flex flex-wrap gap-4">
+                <button onclick="filterEvents('all')" id="filter-all" 
+                    class="px-6 py-2 rounded-xl font-semibold premium-btn-primary text-white active-filter">
+                    All Events
+                </button>
+                <button onclick="filterEvents('rv')" id="filter-rv" 
+                    class="px-6 py-2 rounded-xl font-semibold bg-white text-indigo-600 border-2 border-indigo-200 hover:bg-indigo-50">
+                    RV College
+                </button>
+                <button onclick="filterEvents('bms')" id="filter-bms" 
+                    class="px-6 py-2 rounded-xl font-semibold bg-white text-pink-600 border-2 border-pink-200 hover:bg-pink-50">
+                    BMS College
+                </button>
+                <button onclick="filterEvents('pes')" id="filter-pes" 
+                    class="px-6 py-2 rounded-xl font-semibold bg-white text-cyan-600 border-2 border-cyan-200 hover:bg-cyan-50">
+                    PES University
+                </button>
+                <button onclick="filterEvents('msrit')" id="filter-msrit" 
+                    class="px-6 py-2 rounded-xl font-semibold bg-white text-teal-600 border-2 border-teal-200 hover:bg-teal-50">
+                    MSRIT
+                </button>
+            </div>
+            <button onclick="showAddEventModal()" 
+                class="premium-btn-secondary text-white px-6 py-2 rounded-xl font-semibold shadow-lg flex items-center">
+                <span class="mr-2">➕</span> Add Event
+            </button>
+        </div>
+
+        <!-- Events Grid -->
+        <div id="eventsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Events will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Add Event Modal -->
+    <div id="addEventModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">➕ Add New Event</h2>
+                <button onclick="closeAddEventModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <form id="eventForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Event Title</label>
+                    <input type="text" id="eventTitle" required 
+                        class="premium-input w-full rounded-xl px-4 py-3 bg-white"
+                        placeholder="e.g., Tech Fest 2024">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">College</label>
+                    <select id="eventCollege" required class="premium-input w-full rounded-xl px-4 py-3 bg-white" title="Select college" aria-label="Select college">
+                        <option value="rv">RV College of Engineering</option>
+                        <option value="bms">BMS College of Engineering</option>
+                        <option value="pes">PES University</option>
+                        <option value="msrit">MS Ramaiah Institute of Technology</option>
+                        <option value="other">Other College</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                    <textarea id="eventDescription" required rows="4"
+                        class="premium-input w-full rounded-xl px-4 py-3 bg-white resize-none"
+                        placeholder="Describe the event..."></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Date</label>
+                        <input type="date" id="eventDate" required 
+                            class="premium-input w-full rounded-xl px-4 py-3 bg-white" title="Select event date" aria-label="Select event date">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Time</label>
+                        <input type="time" id="eventTime" required 
+                            class="premium-input w-full rounded-xl px-4 py-3 bg-white" title="Select event time" aria-label="Select event time">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Location/Venue</label>
+                    <input type="text" id="eventLocation" required 
+                        class="premium-input w-full rounded-xl px-4 py-3 bg-white"
+                        placeholder="e.g., Main Auditorium">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Event Type</label>
+                    <select id="eventType" class="premium-input w-full rounded-xl px-4 py-3 bg-white" title="Select event type" aria-label="Select event type">
+                        <option value="tech">Tech Event</option>
+                        <option value="cultural">Cultural Event</option>
+                        <option value="sports">Sports Event</option>
+                        <option value="workshop">Workshop</option>
+                        <option value="seminar">Seminar</option>
+                        <option value="competition">Competition</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Image URL (Optional)</label>
+                    <input type="url" id="eventImage" 
+                        class="premium-input w-full rounded-xl px-4 py-3 bg-white"
+                        placeholder="https://example.com/image.jpg">
+                </div>
+                <button type="submit" 
+                    class="premium-btn-primary w-full text-white px-6 py-3 rounded-xl font-semibold shadow-lg">
+                    ✨ Create Event
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">🔍 Search Events</h2>
+                <button onclick="closeSearchModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <input type="text" id="searchInput" placeholder="Search events by title, college, or type..." 
+                class="premium-input w-full rounded-xl px-4 py-3 mb-4">
+            <div id="searchResults" class="max-h-96 overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <script>
+        // Events storage
+        let events = JSON.parse(localStorage.getItem('virtualCollegeEvents')) || [
+            {
+                id: 'evt1',
+                title: 'Tech Fest 2024',
+                college: 'rv',
+                collegeName: 'RV College of Engineering',
+                description: 'Annual technical festival featuring coding competitions, hackathons, and tech exhibitions.',
+                date: '2024-03-15',
+                time: '09:00',
+                location: 'Main Auditorium, RVCE Campus',
+                type: 'tech',
+                image: 'https://via.placeholder.com/600x400?text=Tech+Fest+2024',
+                attendees: 245,
+                registered: false
+            },
+            {
+                id: 'evt2',
+                title: 'Cultural Night',
+                college: 'bms',
+                collegeName: 'BMS College of Engineering',
+                description: 'A night of music, dance, and cultural performances showcasing diverse talents.',
+                date: '2024-03-20',
+                time: '18:00',
+                location: 'Open Air Theatre, BMSCE',
+                type: 'cultural',
+                image: 'https://via.placeholder.com/600x400?text=Cultural+Night',
+                attendees: 180,
+                registered: false
+            },
+            {
+                id: 'evt3',
+                title: 'AI & Machine Learning Workshop',
+                college: 'pes',
+                collegeName: 'PES University',
+                description: 'Hands-on workshop on AI and ML fundamentals with industry experts.',
+                date: '2024-03-25',
+                time: '10:00',
+                location: 'Computer Science Block, PES',
+                type: 'workshop',
+                image: 'https://via.placeholder.com/600x400?text=AI+Workshop',
+                attendees: 120,
+                registered: false
+            },
+            {
+                id: 'evt4',
+                title: 'Inter-College Sports Championship',
+                college: 'msrit',
+                collegeName: 'MS Ramaiah Institute of Technology',
+                description: 'Competitive sports event featuring football, basketball, and cricket tournaments.',
+                date: '2024-04-01',
+                time: '08:00',
+                location: 'Sports Complex, MSRIT',
+                type: 'sports',
+                image: 'https://via.placeholder.com/600x400?text=Sports+Championship',
+                attendees: 300,
+                registered: false
+            },
+            {
+                id: 'evt5',
+                title: 'Startup Pitch Competition',
+                college: 'rv',
+                collegeName: 'RV College of Engineering',
+                description: 'Entrepreneurship competition where students pitch their startup ideas to investors.',
+                date: '2024-04-10',
+                time: '14:00',
+                location: 'Innovation Center, RVCE',
+                type: 'competition',
+                image: 'https://via.placeholder.com/600x400?text=Startup+Pitch',
+                attendees: 95,
+                registered: false
+            }
+        ];
+
+        // Save initial events
+        if (!localStorage.getItem('virtualCollegeEvents')) {
+            localStorage.setItem('virtualCollegeEvents', JSON.stringify(events));
+        } else {
+            events = JSON.parse(localStorage.getItem('virtualCollegeEvents'));
+        }
+
+        let currentFilter = 'all';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderEvents();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('eventForm').addEventListener('submit', handleEventSubmit);
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+        }
+
+        function handleEventSubmit(e) {
+            e.preventDefault();
+            const title = document.getElementById('eventTitle').value;
+            const college = document.getElementById('eventCollege').value;
+            const description = document.getElementById('eventDescription').value;
+            const date = document.getElementById('eventDate').value;
+            const time = document.getElementById('eventTime').value;
+            const location = document.getElementById('eventLocation').value;
+            const type = document.getElementById('eventType').value;
+            const image = document.getElementById('eventImage').value;
+
+            const collegeNames = {
+                rv: 'RV College of Engineering',
+                bms: 'BMS College of Engineering',
+                pes: 'PES University',
+                msrit: 'MS Ramaiah Institute of Technology',
+                other: 'Other College'
+            };
+
+            // Get current user's name
+            const currentUser = getCurrentAuthUser();
+            const createdBy = currentUser ? currentUser.name : 'Anonymous User';
+
+            const newEvent = {
+                id: 'evt_' + Date.now(),
+                title: title,
+                college: college,
+                collegeName: collegeNames[college],
+                description: description,
+                date: date,
+                time: time,
+                location: location,
+                type: type,
+                image: image || `https://via.placeholder.com/600x400?text=${encodeURIComponent(title)}`,
+                attendees: 0,
+                registered: false,
+                createdBy: createdBy,
+                userId: currentUser ? currentUser.id : null,
+                createdAt: new Date().toISOString()
+            };
+
+            events.unshift(newEvent);
+            localStorage.setItem('virtualCollegeEvents', JSON.stringify(events));
+            
+            document.getElementById('eventForm').reset();
+            closeAddEventModal();
+            renderEvents();
+            showNotification('Event created successfully! 🎉', 'success');
+        }
+
+        function renderEvents() {
+            const container = document.getElementById('eventsContainer');
+            
+            let filteredEvents = events;
+            if (currentFilter !== 'all') {
+                filteredEvents = events.filter(event => event.college === currentFilter);
+            }
+
+            // Sort by date
+            filteredEvents.sort((a, b) => new Date(a.date + 'T' + a.time) - new Date(b.date + 'T' + b.time));
+
+            if (filteredEvents.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full rounded-2xl p-12 text-center" style="background-color: #1A759F; border: 2px solid rgba(255, 255, 255, 0.1);">
+                        <div class="text-6xl mb-4">📅</div>
+                        <h3 class="text-2xl font-bold text-white mb-2">No events found</h3>
+                        <p style="color: #E5E7EB;">Try a different filter or create a new event!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredEvents.map(event => {
+                const eventDate = new Date(event.date + 'T' + event.time);
+                const isPast = eventDate < new Date();
+                const collegeClass = `college-${event.college}`;
+                const typeIcons = {
+                    tech: '💻',
+                    cultural: '🎭',
+                    sports: '⚽',
+                    workshop: '🔧',
+                    seminar: '📚',
+                    competition: '🏆',
+                    other: '📅'
+                };
+
+                return `
+                    <div class="rounded-2xl overflow-hidden ${isPast ? 'opacity-75' : ''}" style="background-color: #1A759F; border: 2px solid rgba(255, 255, 255, 0.1);">
+                        ${event.image ? `
+                            <div class="h-48 bg-cover bg-center" style="background-image: url('${event.image}')">
+                                <div class="h-full bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
+                                    <span class="event-badge ${collegeClass}">${event.collegeName}</span>
+                                </div>
+                            </div>
+                        ` : ''}
+                        <div class="p-6">
+                            <div class="flex items-start justify-between mb-3">
+                                <h3 class="text-2xl font-bold text-white flex-1">${event.title}</h3>
+                                <span class="text-3xl ml-2">${typeIcons[event.type] || '📅'}</span>
+                            </div>
+                            <p class="mb-4 line-clamp-3" style="color: #E5E7EB;">${event.description}</p>
+                            <div class="space-y-2 mb-4 text-sm" style="color: #D1D5DB;">
+                                <div class="flex items-center">
+                                    <span class="mr-2">📅</span>
+                                    <span>${formatDate(event.date)} at ${formatTime(event.time)}</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="mr-2">📍</span>
+                                    <span>${event.location}</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="mr-2">👥</span>
+                                    <span>${event.attendees} attendees</span>
+                                </div>
+                            </div>
+                            <div class="flex space-x-3">
+                                <button onclick="registerEvent('${event.id}')" 
+                                    class="flex-1 text-white px-4 py-2 rounded-xl font-semibold ${event.registered ? 'opacity-50 cursor-not-allowed' : ''}" 
+                                    style="background-color: #FCD34D; color: #1A759F;"
+                                    ${event.registered ? 'disabled' : ''}>
+                                    ${event.registered ? '✓ Registered' : '📝 Register'}
+                                </button>
+                                <button onclick="shareEvent('${event.id}')" 
+                                    class="text-white px-4 py-2 rounded-xl font-semibold"
+                                    style="background-color: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3);">
+                                    🔗
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterEvents(college) {
+            currentFilter = college;
+            
+            // Update button styles
+            document.querySelectorAll('[id^="filter-"]').forEach(btn => {
+                btn.classList.remove('active-filter', 'premium-btn-primary', 'text-white');
+                btn.classList.add('bg-white', 'border-2');
+            });
+            
+            const activeBtn = document.getElementById(`filter-${college}`);
+            activeBtn.classList.add('active-filter', 'premium-btn-primary', 'text-white');
+            activeBtn.classList.remove('bg-white', 'border-2');
+            
+            renderEvents();
+        }
+
+        function registerEvent(eventId) {
+            const event = events.find(e => e.id === eventId);
+            if (event && !event.registered) {
+                event.registered = true;
+                event.attendees++;
+                localStorage.setItem('virtualCollegeEvents', JSON.stringify(events));
+                renderEvents();
+                showNotification(`Registered for ${event.title}! 🎉`, 'success');
+            }
+        }
+
+        function shareEvent(eventId) {
+            const event = events.find(e => e.id === eventId);
+            if (event && navigator.share) {
+                navigator.share({
+                    title: event.title,
+                    text: event.description,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(`${event.title} - ${event.collegeName}\n${event.description}`);
+                showNotification('Event details copied! 📋', 'success');
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function formatTime(timeString) {
+            const [hours, minutes] = timeString.split(':');
+            const hour = parseInt(hours);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const displayHour = hour % 12 || 12;
+            return `${displayHour}:${minutes} ${ampm}`;
+        }
+
+        function showAddEventModal() {
+            document.getElementById('addEventModal').classList.add('active');
+            // Set minimum date to today
+            document.getElementById('eventDate').min = new Date().toISOString().split('T')[0];
+        }
+
+        function closeAddEventModal() {
+            document.getElementById('addEventModal').classList.remove('active');
+        }
+
+        function showSearchModal() {
+            document.getElementById('searchModal').classList.add('active');
+            document.getElementById('searchInput').focus();
+        }
+
+        function closeSearchModal() {
+            document.getElementById('searchModal').classList.remove('active');
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (query.length < 2) {
+                resultsDiv.innerHTML = '';
+                return;
+            }
+
+            const results = events.filter(event => 
+                event.title.toLowerCase().includes(query) || 
+                event.description.toLowerCase().includes(query) ||
+                event.collegeName.toLowerCase().includes(query) ||
+                event.type.toLowerCase().includes(query)
+            );
+
+            if (results.length === 0) {
+                resultsDiv.innerHTML = '<p class="text-gray-500 text-center py-4">No results found</p>';
+                return;
+            }
+
+            resultsDiv.innerHTML = results.map(event => `
+                <div class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer" onclick="navigateToEvent('${event.id}')">
+                    <h4 class="font-semibold text-gray-900">${event.title}</h4>
+                    <p class="text-sm text-gray-600 mt-1">${event.collegeName} • ${formatDate(event.date)}</p>
+                </div>
+            `).join('');
+        }
+
+        function navigateToEvent(eventId) {
+            closeSearchModal();
+            const event = events.find(e => e.id === eventId);
+            if (event) {
+                document.getElementById('eventsContainer').scrollIntoView({ behavior: 'smooth' });
+                setTimeout(() => {
+                    filterEvents(event.college);
+                }, 100);
+            }
+        }
+
+        function showProfile() {
+            alert('Profile page coming soon! 👤');
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-24 right-4 bg-white rounded-xl shadow-2xl px-6 py-4 z-50 border-l-4 ${
+                type === 'success' ? 'border-green-500' : 'border-red-500'
+            }`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Close modals on outside click
+        document.getElementById('addEventModal').addEventListener('click', (e) => {
+            if (e.target.id === 'addEventModal') {
+                closeAddEventModal();
+            }
+        });
+
+        document.getElementById('searchModal').addEventListener('click', (e) => {
+            if (e.target.id === 'searchModal') {
+                closeSearchModal();
+            }
+        });
+
+        // Authentication check and user initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const currentUser = getCurrentAuthUser();
+            if (currentUser) {
+                document.getElementById('userName').textContent = currentUser.name;
+            }
+        });
+    </script>
+</body>
+</html>
+

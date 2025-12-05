@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Feed - CampusConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="auth.js"></script>
+    <style>
+        :root {
+            /* Page-specific mapping to global palette */
+            --premium-purple: #1A759F;
+            --premium-indigo: #184E77;
+            --premium-teal: #43AA8B;
+            --premium-cyan: #2FEE46;
+            --premium-pink: #C6AC8F;
+            --premium-orange: #CCA000;
+            --premium-gradient-1: linear-gradient(135deg, #184E77 0%, #1A759F 100%);
+            --premium-gradient-2: linear-gradient(135deg, #C6AC8F 0%, #CCA000 100%);
+            --premium-gradient-3: linear-gradient(135deg, #184E77 0%, #1A759F 100%);
+            --premium-gradient-4: linear-gradient(135deg, #333D29 0%, #212529 100%);
+        }
+
+        body {
+            background-color: #184E77;
+        }
+
+        .premium-card {
+            background: #1A759F;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            box-shadow: 0 10px 30px rgba(26, 117, 159, 0.2);
+            color: #f8f9fa;
+        }
+
+        .premium-card h2 {
+            color: #f8f9fa;
+        }
+
+        .premium-btn-primary {
+            background: var(--premium-gradient-1);
+            transition: all 0.3s ease;
+        }
+
+        .premium-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(26, 117, 159, 0.4);
+        }
+
+        .premium-btn-secondary {
+            background: var(--premium-gradient-3);
+            transition: all 0.3s ease;
+        }
+
+        .premium-btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(26, 117, 159, 0.4);
+        }
+
+        .post-card {
+            background: #1A759F;
+            color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .post-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(26, 117, 159, 0.3);
+        }
+
+        .gradient-text {
+            background: var(--premium-gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .premium-input {
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .premium-input:focus {
+            border-color: var(--premium-purple);
+            box-shadow: 0 0 0 3px rgba(26, 117, 159, 0.1);
+            outline: none;
+        }
+    </style>
+</head>
+<body class="vc-body">
+    <!-- Navigation -->
+    <nav class="vc-header sticky top-0 z-50 navbar-glow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center hover:opacity-80 transition-opacity">
+                        <span class="text-lg font-bold text-white hover:text-indigo-200 transition-colors logo-text-effect" style="text-shadow: 0 0 10px rgba(24, 78, 119, 0.5), 0 0 20px rgba(26, 117, 159, 0.3);">CampusConnect</span>
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-white/20 transition-colors">Home</a>
+                    <a href="index.html#/mentors" class="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-white/20 transition-colors">Mentors</a>
+                    <a href="event.html" class="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-white/20 transition-colors">Events</a>
+                    <a href="index.html#/leaderboard" class="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-white/20 transition-colors">Leaderboard</a>
+                    <a href="postfeed.html" class="px-4 py-2 rounded-md text-sm font-medium bg-white text-indigo-600 font-semibold">Post Feed</a>
+                    <button onclick="showSearchModal()" class="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-white/20 transition-colors flex items-center">
+                        <span class="mr-2">🔍</span> Search
+                    </button>
+                    <a href="profile.html" class="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-white/20 transition-colors">Profile</a>
+                    <div class="flex items-center space-x-2 ml-4 pl-4 border-l border-white/20">
+                        <span class="text-white text-sm" id="userName">Guest</span>
+                        <button onclick="logoutUser()" class="px-4 py-2 rounded-md text-sm font-medium text-white bg-red-500/20 hover:bg-red-500/40 transition-colors">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 vc-text-dark">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold gradient-text mb-4">📝 Post Feed</h1>
+            <p class="text-xl vc-minor-detail">Share your thoughts, ideas, and updates with the CampusConnect community</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Create Post Section -->
+            <div class="lg:col-span-1">
+                <div class="premium-card rounded-2xl p-6 sticky top-24">
+                    <h2 class="text-2xl font-bold text-white mb-6 flex items-center">
+                        <span class="mr-2">✨</span> Create New Post
+                    </h2>
+                    <form id="postForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-white mb-2">Title</label>
+                            <input type="text" id="postTitle" required 
+                                class="premium-input w-full rounded-xl px-4 py-3 bg-white text-gray-900 font-semibold"
+                                placeholder="What's on your mind?">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-white mb-2">Content</label>
+                            <textarea id="postContent" required rows="6"
+                                class="premium-input w-full rounded-xl px-4 py-3 bg-white text-gray-900 font-semibold resize-none"
+                                placeholder="Share your thoughts..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-white mb-2">Category</label>
+                            <select id="postCategory" class="premium-input w-full rounded-xl px-4 py-3 bg-white text-gray-900 font-semibold" title="Select post category" aria-label="Select post category">
+                                <option value="general">General</option>
+                                <option value="academic">Academic</option>
+                                <option value="social">Social</option>
+                                <option value="project">Project</option>
+                                <option value="question">Question</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-white mb-2">Image URL (Optional)</label>
+                            <input type="url" id="postImage" 
+                                class="premium-input w-full rounded-xl px-4 py-3 bg-white text-gray-900 font-semibold"
+                                placeholder="https://example.com/image.jpg">
+                        </div>
+                        <button type="submit" 
+                            class="premium-btn-primary w-full text-white px-6 py-3 rounded-xl font-semibold shadow-lg">
+                            📤 Publish Post
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Posts Feed -->
+            <div class="lg:col-span-2">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-bold text-white flex items-center">
+                        <span class="mr-2">📰</span> Recent Posts
+                    </h2>
+                    <select id="filterCategory" class="premium-input rounded-xl px-4 py-2 bg-white" title="Filter posts by category" aria-label="Filter posts by category">
+                        <option value="all">All Categories</option>
+                        <option value="general">General</option>
+                        <option value="academic">Academic</option>
+                        <option value="social">Social</option>
+                        <option value="project">Project</option>
+                        <option value="question">Question</option>
+                    </select>
+                </div>
+
+                <div id="postsContainer" class="space-y-6">
+                    <!-- Posts will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">🔍 Search</h2>
+                <button onclick="closeSearchModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <input type="text" id="searchInput" placeholder="Search posts, users, events..." 
+                class="premium-input w-full rounded-xl px-4 py-3 mb-4">
+            <div id="searchResults" class="max-h-96 overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <script>
+        // Posts storage
+        let posts = JSON.parse(localStorage.getItem('virtualCollegePosts')) || [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPosts();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('postForm').addEventListener('submit', handlePostSubmit);
+            document.getElementById('filterCategory').addEventListener('change', renderPosts);
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+        }
+
+        function handlePostSubmit(e) {
+            e.preventDefault();
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('postContent').value;
+            const category = document.getElementById('postCategory').value;
+            const image = document.getElementById('postImage').value;
+
+            // Get current user's name
+            const currentUser = getCurrentAuthUser();
+            const userName = currentUser ? currentUser.name : 'Anonymous User';
+
+            const newPost = {
+                id: 'post_' + Date.now(),
+                title: title,
+                content: content,
+                category: category,
+                image: image || null,
+                author: userName,
+                authorAvatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=6366f1&color=fff&size=200`,
+                timestamp: new Date().toISOString(),
+                likes: 0,
+                comments: [],
+                userId: currentUser ? currentUser.id : null
+            };
+
+            posts.unshift(newPost);
+            localStorage.setItem('virtualCollegePosts', JSON.stringify(posts));
+            
+            // Reset form
+            document.getElementById('postForm').reset();
+            renderPosts();
+            
+            // Show success message
+            showNotification('Post published successfully! 🎉', 'success');
+        }
+
+        function renderPosts() {
+            const container = document.getElementById('postsContainer');
+            const filter = document.getElementById('filterCategory').value;
+            
+            let filteredPosts = posts;
+            if (filter !== 'all') {
+                filteredPosts = posts.filter(post => post.category === filter);
+            }
+
+            if (filteredPosts.length === 0) {
+                container.innerHTML = `
+                    <div class="premium-card rounded-2xl p-12 text-center">
+                        <div class="text-6xl mb-4">📭</div>
+                        <h3 class="text-2xl font-bold text-white mb-2">No posts yet</h3>
+                        <p style="color: #D1D5DB;">Be the first to share something with the community!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredPosts.map(post => {
+                const timeAgo = getTimeAgo(new Date(post.timestamp));
+                const categoryColors = {
+                    general: 'bg-indigo-100 text-indigo-800',
+                    academic: 'bg-purple-100 text-purple-800',
+                    social: 'bg-pink-100 text-pink-800',
+                    project: 'bg-teal-100 text-teal-800',
+                    question: 'bg-orange-100 text-orange-800'
+                };
+
+                return `
+                    <div class="premium-card post-card rounded-2xl p-6">
+                        <div class="flex items-start space-x-4 mb-4">
+                            <img src="${post.authorAvatar}" alt="${post.author}" 
+                                class="w-12 h-12 rounded-full border-2 border-indigo-200">
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-bold text-white">${post.author}</h3>
+                                        <p class="text-sm font-semibold" style="color: #FCD34D;">${timeAgo}</p>
+                                    </div>
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold" style="background-color: #FCD34D; color: #1A759F;">
+                                        ${post.category.charAt(0).toUpperCase() + post.category.slice(1)}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="text-2xl font-bold text-white mb-3">${post.title}</h4>
+                        ${post.image ? `<img src="${post.image}" alt="Post image" class="w-full rounded-xl mb-4 object-cover h-64">` : ''}
+                        <p class="text-white mb-4 leading-relaxed">${post.content}</p>
+                        <div class="flex items-center space-x-6 pt-4 border-t border-white/20">
+                            <button onclick="likePost('${post.id}')" class="flex items-center space-x-2 transition-colors hover:text-pink-400" style="color: #E5E7EB;">
+                                <span class="text-xl">${post.liked ? '❤️' : '🤍'}</span>
+                                <span class="font-semibold">${post.likes}</span>
+                            </button>
+                            <button onclick="showComments('${post.id}')" class="flex items-center space-x-2 transition-colors hover:text-blue-300" style="color: #E5E7EB;">
+                                <span class="text-xl">💬</span>
+                                <span class="font-semibold">${post.comments.length} Comments</span>
+                            </button>
+                            <button onclick="sharePost('${post.id}')" class="flex items-center space-x-2 transition-colors hover:text-green-300" style="color: #E5E7EB;">
+                                <span class="text-xl">🔗</span>
+                                <span class="font-semibold">Share</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function likePost(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                post.liked = !post.liked;
+                post.likes += post.liked ? 1 : -1;
+                localStorage.setItem('virtualCollegePosts', JSON.stringify(posts));
+                renderPosts();
+            }
+        }
+
+        function showComments(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+
+            const commentText = prompt('Add a comment:');
+            if (commentText) {
+                post.comments.push({
+                    id: 'comment_' + Date.now(),
+                    author: 'You',
+                    text: commentText,
+                    timestamp: new Date().toISOString()
+                });
+                localStorage.setItem('virtualCollegePosts', JSON.stringify(posts));
+                renderPosts();
+                showNotification('Comment added! 💬', 'success');
+            }
+        }
+
+        function sharePost(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (post && navigator.share) {
+                navigator.share({
+                    title: post.title,
+                    text: post.content,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                showNotification('Link copied to clipboard! 📋', 'success');
+            }
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            if (seconds < 60) return 'just now';
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return `${minutes}m ago`;
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `${hours}h ago`;
+            const days = Math.floor(hours / 24);
+            return `${days}d ago`;
+        }
+
+        function showSearchModal() {
+            document.getElementById('searchModal').classList.add('active');
+            document.getElementById('searchInput').focus();
+        }
+
+        function closeSearchModal() {
+            document.getElementById('searchModal').classList.remove('active');
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (query.length < 2) {
+                resultsDiv.innerHTML = '';
+                return;
+            }
+
+            const results = posts.filter(post => 
+                post.title.toLowerCase().includes(query) || 
+                post.content.toLowerCase().includes(query)
+            );
+
+            if (results.length === 0) {
+                resultsDiv.innerHTML = '<p class="text-gray-500 text-center py-4">No results found</p>';
+                return;
+            }
+
+            resultsDiv.innerHTML = results.map(post => `
+                <div class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer" onclick="navigateToPost('${post.id}')">
+                    <h4 class="font-semibold text-gray-900">${post.title}</h4>
+                    <p class="text-sm text-gray-600 mt-1">${post.content.substring(0, 100)}...</p>
+                </div>
+            `).join('');
+        }
+
+        function navigateToPost(postId) {
+            closeSearchModal();
+            const post = posts.find(p => p.id === postId);
+            if (post) {
+                document.getElementById('postsContainer').scrollIntoView({ behavior: 'smooth' });
+                setTimeout(() => {
+                    const postElement = document.querySelector(`[onclick*="${postId}"]`)?.closest('.post-card');
+                    if (postElement) {
+                        postElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        postElement.style.animation = 'pulse 2s';
+                    }
+                }, 100);
+            }
+        }
+
+        function showProfile() {
+            alert('Profile page coming soon! 👤');
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-24 right-4 bg-white rounded-xl shadow-2xl px-6 py-4 z-50 border-l-4 ${
+                type === 'success' ? 'border-green-500' : 'border-red-500'
+            }`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Close modal on outside click
+        document.getElementById('searchModal').addEventListener('click', (e) => {
+            if (e.target.id === 'searchModal') {
+                closeSearchModal();
+            }
+        });
+
+        // Authentication check and user initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const currentUser = getCurrentAuthUser();
+            if (currentUser) {
+                document.getElementById('userName').textContent = currentUser.name;
+            }
+        });
+    </script>
+</body>
+</html>
+

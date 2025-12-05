@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect - Online Learning Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="auth.js"></script>
+</head>
+<body class="vc-body">
+    <div id="app"></div>
+    <script src="data.js"></script>
+    <script src="router.js"></script>
+    <script src="components.js"></script>
+    <script src="app.js"></script>
+    
+    <script>
+        // Initialize router with all routes
+        const router = new Router();
+
+        // Home route
+        router.addRoute('/', () => {
+            renderHome();
+        });
+
+        // Learn route (courses)
+        router.addRoute('/learn/:courseName', (courseName) => {
+            renderCourse(courseName);
+        });
+
+        // Mentors route
+        router.addRoute('/mentors', () => {
+            renderMentors();
+        });
+
+        // Mentor profile route
+        router.addRoute('/mentors/:id', (mentorId) => {
+            renderMentorProfile(mentorId);
+        });
+
+        // Leaderboard route
+        router.addRoute('/leaderboard', () => {
+            renderLeaderboard();
+        });
+
+        // Initialize app
+        window.addEventListener('load', () => {
+            router.handleRoute();
+        });
+    </script>
+</body>
+</html>

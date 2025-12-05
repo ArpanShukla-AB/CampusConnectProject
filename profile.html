@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - CampusConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            /* Page-specific mapping to global palette */
+            --premium-purple: #1A759F;
+            --premium-indigo: #003049;
+            --premium-teal: #43AA8B;
+            --premium-cyan: #2FEE46;
+            --premium-pink: #C6AC8F;
+            --premium-orange: #CCA000;
+            --premium-gradient-1: linear-gradient(135deg, #003049 0%, #1A759F 100%);
+            --premium-gradient-2: linear-gradient(135deg, #333D29 0%, #343A40 100%);
+            --premium-gradient-3: linear-gradient(135deg, #43AA8B 0%, #2FEE46 100%);
+            --premium-gradient-4: linear-gradient(135deg, #161A1D 0%, #212529 100%);
+        }
+
+        .premium-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.1);
+        }
+
+        .premium-btn-primary {
+            background: var(--premium-gradient-1);
+            transition: all 0.3s ease;
+        }
+
+        .premium-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        .gradient-text {
+            background: var(--premium-gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .premium-input {
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .premium-input:focus {
+            border-color: var(--premium-purple);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            outline: none;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(26, 117, 159, 0.12) 0%, rgba(67, 170, 139, 0.12) 100%);
+            border: 1px solid rgba(33, 37, 41, 0.2);
+        }
+    </style>
+</head>
+<body class="vc-body">
+    <!-- Navigation -->
+    <nav class="vc-header sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-bold text-white hover:text-indigo-200 transition-colors flex items-center">
+                        <span class="mr-2">🎓</span> CampusConnect
+                    </a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="index.html" class="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-white/20 transition-colors">Home</a>
+                    <a href="event.html" class="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-white/20 transition-colors">Events</a>
+                    <a href="index.html#/leaderboard" class="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-white/20 transition-colors">Leaderboard</a>
+                    <a href="postfeed.html" class="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-white/20 transition-colors">Post Feed</a>
+                    <button onclick="showSearchModal()" class="px-4 py-2 rounded-md text-sm font-medium text-white hover:bg-white/20 transition-colors flex items-center">
+                        <span class="mr-2">🔍</span> Search
+                    </button>
+                    <a href="profile.html" class="px-4 py-2 rounded-md text-sm font-medium bg-white text-indigo-600 font-semibold">Profile</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 vc-text-dark">
+        <!-- Profile Header -->
+        <div class="premium-card rounded-2xl p-8 mb-8">
+            <div class="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
+                <div class="relative">
+                    <img id="profileAvatar" src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff&size=200" 
+                        alt="Profile" class="w-32 h-32 rounded-full border-4 border-indigo-200 shadow-xl">
+                    <button onclick="changeAvatar()" class="absolute bottom-0 right-0 bg-indigo-600 text-white rounded-full p-2 hover:bg-indigo-700 transition-colors">
+                        📷
+                    </button>
+                </div>
+                <div class="flex-1 text-center md:text-left">
+                    <h1 id="profileName" class="text-4xl font-bold gradient-text mb-2">Your Name</h1>
+                    <p id="profileEmail" class="mb-4 vc-minor-detail-soft">user@virtualcollege.com</p>
+                    <div class="flex flex-wrap gap-2 justify-center md:justify-start mb-4">
+                        <span class="px-4 py-2 bg-indigo-100 text-indigo-800 rounded-full text-sm font-semibold">Student</span>
+                        <span class="px-4 py-2 bg-purple-100 text-purple-800 rounded-full text-sm font-semibold">Active Member</span>
+                    </div>
+                    <p id="profileBio" class="vc-minor-detail">Welcome to CampusConnect! Update your profile to get started.</p>
+                </div>
+                <button onclick="editProfile()" class="premium-btn-primary text-white px-6 py-3 rounded-xl font-semibold shadow-lg">
+                    ✏️ Edit Profile
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card rounded-xl p-6 text-center">
+                <div class="text-3xl mb-2">📝</div>
+                <div class="text-3xl font-bold gradient-text" id="postsCount">0</div>
+                <div class="text-gray-600 text-sm">Posts</div>
+            </div>
+            <div class="stat-card rounded-xl p-6 text-center">
+                <div class="text-3xl mb-2">📅</div>
+                <div class="text-3xl font-bold gradient-text" id="eventsCount">0</div>
+                <div class="text-gray-600 text-sm">Events</div>
+            </div>
+            <div class="stat-card rounded-xl p-6 text-center">
+                <div class="text-3xl mb-2">👥</div>
+                <div class="text-3xl font-bold gradient-text" id="connectionsCount">0</div>
+                <div class="text-gray-600 text-sm">Connections</div>
+            </div>
+            <div class="stat-card rounded-xl p-6 text-center">
+                <div class="text-3xl mb-2">⭐</div>
+                <div class="text-3xl font-bold gradient-text" id="ratingCount">0</div>
+                <div class="text-gray-600 text-sm">Rating</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Profile Info -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- About Section -->
+                <div class="premium-card rounded-2xl p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                        <span class="mr-2">ℹ️</span> About
+                    </h2>
+                    <div id="aboutContent" class="space-y-4 text-gray-700">
+                        <div>
+                            <strong>College:</strong> <span id="profileCollege">Not specified</span>
+                        </div>
+                        <div>
+                            <strong>Course:</strong> <span id="profileCourse">Not specified</span>
+                        </div>
+                        <div>
+                            <strong>Year:</strong> <span id="profileYear">Not specified</span>
+                        </div>
+                        <div>
+                            <strong>Interests:</strong> <span id="profileInterests">Add your interests</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="premium-card rounded-2xl p-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                        <span class="mr-2">📊</span> Recent Activity
+                    </h2>
+                    <div id="activityContent" class="space-y-4">
+                        <p class="text-gray-500 text-center py-4">No recent activity</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Quick Actions -->
+                <div class="premium-card rounded-2xl p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
+                    <div class="space-y-3">
+                        <a href="postfeed.html" class="block premium-btn-primary text-white px-4 py-3 rounded-xl font-semibold text-center">
+                            📝 Create Post
+                        </a>
+                        <a href="event.html" class="block text-white px-4 py-3 rounded-xl font-semibold text-center" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            📅 Browse Events
+                        </a>
+                        <button onclick="exportData()" class="w-full bg-gray-100 text-gray-700 px-4 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-colors">
+                            💾 Export Data
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div class="premium-card rounded-2xl p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Settings</h2>
+                    <div class="space-y-3">
+                        <label class="flex items-center justify-between cursor-pointer">
+                            <span class="text-gray-700">Email Notifications</span>
+                            <input type="checkbox" id="emailNotifications" class="toggle-checkbox" checked title="Toggle email notifications" aria-label="Toggle email notifications">
+                        </label>
+                        <label class="flex items-center justify-between cursor-pointer">
+                            <span class="text-gray-700">Public Profile</span>
+                            <input type="checkbox" id="publicProfile" class="toggle-checkbox" checked title="Toggle public profile" aria-label="Toggle public profile">
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">✏️ Edit Profile</h2>
+                <button onclick="closeEditModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <form id="profileForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                    <input type="text" id="editName" class="premium-input w-full rounded-xl px-4 py-3 bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                    <input type="email" id="editEmail" class="premium-input w-full rounded-xl px-4 py-3 bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Bio</label>
+                    <textarea id="editBio" rows="3" class="premium-input w-full rounded-xl px-4 py-3 bg-white resize-none"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">College</label>
+                    <select id="editCollege" class="premium-input w-full rounded-xl px-4 py-3 bg-white" title="Select your college" aria-label="Select your college">
+                        <option value="">Select College</option>
+                        <option value="rv">RV College of Engineering</option>
+                        <option value="bms">BMS College of Engineering</option>
+                        <option value="pes">PES University</option>
+                        <option value="msrit">MS Ramaiah Institute of Technology</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Course</label>
+                    <input type="text" id="editCourse" class="premium-input w-full rounded-xl px-4 py-3 bg-white" placeholder="e.g., Computer Science">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Year</label>
+                    <select id="editYear" class="premium-input w-full rounded-xl px-4 py-3 bg-white" title="Select your year" aria-label="Select your year">
+                        <option value="">Select Year</option>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Interests</label>
+                    <input type="text" id="editInterests" class="premium-input w-full rounded-xl px-4 py-3 bg-white" placeholder="e.g., Programming, Music, Sports">
+                </div>
+                <button type="submit" class="premium-btn-primary w-full text-white px-6 py-3 rounded-xl font-semibold shadow-lg">
+                    💾 Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">🔍 Search</h2>
+                <button onclick="closeSearchModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <input type="text" id="searchInput" placeholder="Search posts, events, users..." 
+                class="premium-input w-full rounded-xl px-4 py-3 mb-4">
+            <div id="searchResults" class="max-h-96 overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <script>
+        // Load profile data
+        let profileData = JSON.parse(localStorage.getItem('virtualCollegeProfile')) || {
+            name: 'Your Name',
+            email: 'user@virtualcollege.com',
+            bio: 'Welcome to CampusConnect! Update your profile to get started.',
+            college: '',
+            course: '',
+            year: '',
+            interests: '',
+            avatar: 'https://ui-avatars.com/api/?name=User&background=6366f1&color=fff&size=200'
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProfile();
+            updateStats();
+            loadActivity();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('profileForm').addEventListener('submit', handleProfileSave);
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+        }
+
+        function loadProfile() {
+            document.getElementById('profileName').textContent = profileData.name;
+            document.getElementById('profileEmail').textContent = profileData.email;
+            document.getElementById('profileBio').textContent = profileData.bio;
+            document.getElementById('profileAvatar').src = profileData.avatar;
+            document.getElementById('profileCollege').textContent = profileData.college || 'Not specified';
+            document.getElementById('profileCourse').textContent = profileData.course || 'Not specified';
+            document.getElementById('profileYear').textContent = profileData.year ? `${profileData.year} Year` : 'Not specified';
+            document.getElementById('profileInterests').textContent = profileData.interests || 'Add your interests';
+        }
+
+        function updateStats() {
+            const posts = JSON.parse(localStorage.getItem('virtualCollegePosts')) || [];
+            const events = JSON.parse(localStorage.getItem('virtualCollegeEvents')) || [];
+            
+            document.getElementById('postsCount').textContent = posts.filter(p => p.author === 'You').length;
+            document.getElementById('eventsCount').textContent = events.filter(e => e.registered).length;
+            document.getElementById('connectionsCount').textContent = 0; // Can be extended
+            document.getElementById('ratingCount').textContent = '4.5';
+        }
+
+        function loadActivity() {
+            const posts = JSON.parse(localStorage.getItem('virtualCollegePosts')) || [];
+            const events = JSON.parse(localStorage.getItem('virtualCollegeEvents')) || [];
+            const activityDiv = document.getElementById('activityContent');
+            
+            const userPosts = posts.filter(p => p.author === 'You').slice(0, 3);
+            const registeredEvents = events.filter(e => e.registered).slice(0, 3);
+            
+            if (userPosts.length === 0 && registeredEvents.length === 0) {
+                activityDiv.innerHTML = '<p class="text-gray-500 text-center py-4">No recent activity</p>';
+                return;
+            }
+
+            let html = '';
+            userPosts.forEach(post => {
+                html += `
+                    <div class="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                        <span class="text-2xl">📝</span>
+                        <div class="flex-1">
+                            <p class="font-semibold text-gray-900">Created post: ${post.title}</p>
+                            <p class="text-sm text-gray-500">${getTimeAgo(new Date(post.timestamp))}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            registeredEvents.forEach(event => {
+                html += `
+                    <div class="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                        <span class="text-2xl">📅</span>
+                        <div class="flex-1">
+                            <p class="font-semibold text-gray-900">Registered for: ${event.title}</p>
+                            <p class="text-sm text-gray-500">${event.collegeName}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            activityDiv.innerHTML = html;
+        }
+
+        function editProfile() {
+            document.getElementById('editName').value = profileData.name;
+            document.getElementById('editEmail').value = profileData.email;
+            document.getElementById('editBio').value = profileData.bio;
+            document.getElementById('editCollege').value = profileData.college;
+            document.getElementById('editCourse').value = profileData.course;
+            document.getElementById('editYear').value = profileData.year;
+            document.getElementById('editInterests').value = profileData.interests;
+            document.getElementById('editProfileModal').classList.add('active');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editProfileModal').classList.remove('active');
+        }
+
+        function handleProfileSave(e) {
+            e.preventDefault();
+            profileData.name = document.getElementById('editName').value;
+            profileData.email = document.getElementById('editEmail').value;
+            profileData.bio = document.getElementById('editBio').value;
+            profileData.college = document.getElementById('editCollege').value;
+            profileData.course = document.getElementById('editCourse').value;
+            profileData.year = document.getElementById('editYear').value;
+            profileData.interests = document.getElementById('editInterests').value;
+            
+            localStorage.setItem('virtualCollegeProfile', JSON.stringify(profileData));
+            loadProfile();
+            closeEditModal();
+            showNotification('Profile updated successfully! ✨', 'success');
+        }
+
+        function changeAvatar() {
+            const url = prompt('Enter image URL:');
+            if (url) {
+                profileData.avatar = url;
+                localStorage.setItem('virtualCollegeProfile', JSON.stringify(profileData));
+                document.getElementById('profileAvatar').src = url;
+                showNotification('Avatar updated! 📷', 'success');
+            }
+        }
+
+        function exportData() {
+            const data = {
+                profile: profileData,
+                posts: JSON.parse(localStorage.getItem('virtualCollegePosts')) || [],
+                events: JSON.parse(localStorage.getItem('virtualCollegeEvents')) || []
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'virtual-college-data.json';
+            a.click();
+            showNotification('Data exported successfully! 💾', 'success');
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            if (seconds < 60) return 'just now';
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return `${minutes}m ago`;
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `${hours}h ago`;
+            const days = Math.floor(hours / 24);
+            return `${days}d ago`;
+        }
+
+        function showSearchModal() {
+            document.getElementById('searchModal').classList.add('active');
+            document.getElementById('searchInput').focus();
+        }
+
+        function closeSearchModal() {
+            document.getElementById('searchModal').classList.remove('active');
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (query.length < 2) {
+                resultsDiv.innerHTML = '';
+                return;
+            }
+
+            const posts = JSON.parse(localStorage.getItem('virtualCollegePosts')) || [];
+            const events = JSON.parse(localStorage.getItem('virtualCollegeEvents')) || [];
+            
+            const postResults = posts.filter(post => 
+                post.title.toLowerCase().includes(query) || 
+                post.content.toLowerCase().includes(query)
+            );
+            
+            const eventResults = events.filter(event => 
+                event.title.toLowerCase().includes(query) || 
+                event.description.toLowerCase().includes(query)
+            );
+
+            if (postResults.length === 0 && eventResults.length === 0) {
+                resultsDiv.innerHTML = '<p class="text-gray-500 text-center py-4">No results found</p>';
+                return;
+            }
+
+            let html = '';
+            if (postResults.length > 0) {
+                html += '<div class="font-semibold text-gray-700 mb-2">Posts</div>';
+                postResults.slice(0, 3).forEach(post => {
+                    html += `
+                        <div class="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer" onclick="window.location.href='postfeed.html'">
+                            <h4 class="font-semibold text-gray-900">${post.title}</h4>
+                            <p class="text-sm text-gray-600">${post.content.substring(0, 50)}...</p>
+                        </div>
+                    `;
+                });
+            }
+            
+            if (eventResults.length > 0) {
+                html += '<div class="font-semibold text-gray-700 mb-2 mt-4">Events</div>';
+                eventResults.slice(0, 3).forEach(event => {
+                    html += `
+                        <div class="p-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer" onclick="window.location.href='event.html'">
+                            <h4 class="font-semibold text-gray-900">${event.title}</h4>
+                            <p class="text-sm text-gray-600">${event.collegeName}</p>
+                        </div>
+                    `;
+                });
+            }
+            
+            resultsDiv.innerHTML = html;
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-24 right-4 bg-white rounded-xl shadow-2xl px-6 py-4 z-50 border-l-4 ${
+                type === 'success' ? 'border-green-500' : 'border-red-500'
+            }`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Close modals on outside click
+        document.getElementById('editProfileModal').addEventListener('click', (e) => {
+            if (e.target.id === 'editProfileModal') {
+                closeEditModal();
+            }
+        });
+
+        document.getElementById('searchModal').addEventListener('click', (e) => {
+            if (e.target.id === 'searchModal') {
+                closeSearchModal();
+            }
+        });
+    </script>
+</body>
+</html>
+

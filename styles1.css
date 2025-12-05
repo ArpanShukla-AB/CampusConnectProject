@@ -1,0 +1,167 @@
+import os, zipfile, textwrap, json, pathlib
+
+root = "/mnt/data/mindscape_html_css_only"
+os.makedirs(root, exist_ok=True)
+
+# Common CSS
+styles_css = """
+/* MindScape – HTML + CSS only prototype */
+:root{
+  --bg:#f6f7fb;
+  --card:#ffffff;
+  --ink:#0f172a;
+  --muted:#64748b;
+  --brand:#2563eb;
+  --brand-2:#1e40af;
+  --ring:#e2e8f0;
+  --good:#22c55e;
+  --bad:#ef4444;
+  --warn:#f59e0b;
+  --radius:18px;
+  --shadow:0 10px 30px rgba(2,6,23,.08);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans","Apple Color Emoji","Segoe UI Emoji";
+  color:var(--ink);
+  background:var(--bg);
+}
+a{color:var(--brand);text-decoration:none}
+.container{
+  display:grid;
+  grid-template-columns: 280px 1fr;
+  min-height:100vh;
+}
+.sidebar{
+  background:#fff;
+  border-right:1px solid var(--ring);
+  padding:24px 18px;
+}
+.brand{
+  display:flex;align-items:center;gap:12px;margin-bottom:28px;
+  font-weight:800;font-size:22px;
+}
+.brand .logo{
+  width:40px;height:40px;border-radius:50%;
+  background: radial-gradient(120% 120% at 20% 20%, #60a5fa, #2563eb);
+  box-shadow: inset 0 0 0 4px rgba(255,255,255,.7);
+}
+.nav a{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;border-radius:12px;color:#0f172a;
+  margin-bottom:6px;font-weight:600;
+}
+.nav a.active, .nav a:hover{background:#eff6ff;color:var(--brand)}
+.main{
+  padding:28px 28px 60px;
+}
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;
+}
+.page-title{font-size:26px;font-weight:800}
+.btn{
+  background:var(--brand);color:#fff;border:none;
+  padding:12px 18px;border-radius:12px;font-weight:700;cursor:pointer;
+  box-shadow: var(--shadow);
+  transition:transform .15s ease;
+}
+.btn:hover{transform:translateY(-1px);background:var(--brand-2)}
+.grid{
+  display:grid;gap:18px;
+  grid-template-columns: repeat(12, 1fr);
+}
+.card{
+  background:var(--card);border:1px solid var(--ring);
+  border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);
+}
+.card h3{margin:6px 0 10px}
+.card p{color:var(--muted);margin:0 0 12px}
+/* Dashboard specific */
+.col-6{grid-column: span 6}
+.col-4{grid-column: span 4}
+.col-8{grid-column: span 8}
+.col-12{grid-column: span 12}
+
+.pill{
+  display:inline-block;padding:8px 12px;border-radius:999px;border:1px solid var(--ring);
+  margin-right:8px;margin-bottom:8px;background:#fff;font-weight:700;color:#0f172a;
+  transition:all .2s ease;
+}
+.pill:hover{border-color:#cbd5e1;transform:translateY(-1px)}
+.pill.good{background:#ecfdf5;border-color:#bbf7d0;color:#166534}
+.pill.bad{background:#fef2f2;border-color:#fecaca;color:#991b1b}
+.pill.ok{background:#f1f5f9;border-color:#e2e8f0;color:#0f172a}
+
+/* Circular gauge (CSS only) */
+.gauge{
+  --val:72; /* 0 to 100 */
+  width:140px;height:140px;border-radius:50%;
+  background:
+    conic-gradient(#fbbf24 calc(var(--val)*1%), #e5e7eb 0);
+  display:grid;place-items:center;margin:auto;
+}
+.gauge .inner{
+  width:104px;height:104px;border-radius:50%;
+  background:#fff;display:grid;place-items:center;
+  font-weight:800;color:#0f172a;
+}
+/* Chat bubbles */
+.chat{
+  background:#fff;border:1px solid var(--ring);border-radius:20px;padding:16px;height:420px;overflow:auto;
+}
+.bubble{max-width:70%;padding:12px 14px;border-radius:16px;margin:8px 0;box-shadow:var(--shadow)}
+.bubble.them{background:#f1f5f9}
+.bubble.me{background:#dbeafe;margin-left:auto}
+.inputbar{display:flex;gap:10px;margin-top:12px}
+.inputbar input{
+  flex:1;padding:12px 14px;border:1px solid var(--ring);border-radius:12px;background:#fff;
+}
+/* Bars for insights */
+.bargrid{display:grid;grid-template-columns: repeat(7,1fr);gap:10px;align-items:end;height:160px;margin-top:16px}
+.bar{background:#dbeafe;border-radius:10px}
+.bar[data-h="20"]{height:20%}
+.bar[data-h="40"]{height:40%}
+.bar[data-h="60"]{height:60%}
+.bar[data-h="80"]{height:80%}
+.bar[data-h="100"]{height:100%}
+
+/* Forms */
+textarea,input,select{font:inherit}
+.textarea{
+  width:100%;min-height:260px;padding:14px;border-radius:16px;border:1px solid var(--ring);background:#fff;
+}
+
+/* Responsive */
+@media (max-width: 980px){
+  .container{grid-template-columns: 1fr}
+  .sidebar{position:sticky;top:0;z-index:10}
+  .grid{grid-template-columns: repeat(6,1fr)}
+  .col-6{grid-column: span 6}
+  .col-8{grid-column: span 6}
+  .col-4{grid-column: span 6}
+}
+"""
+
+# Sidebar snippet to reuse
+def sidebar(active):
+    items = [
+        ("dashboard.html", "Home"),
+        ("insights.html", "Insights"),
+        ("community.html", "Community"),
+        ("messages.html", "Messages"),
+        ("connect.html", "Connect"),
+        ("settings.html", "Settings"),
+    ]
+    links = "\n".join([f'<a href="{href}" class="{ "active" if (href==active) else ""}">✨ {label}</a>' for href,label in items])
+    return f"""
+    <aside class="sidebar">
+      <div class="brand"><div class="logo"></div> MindScape</div>
+      <nav class="nav">
+        {links}
+      </nav>
+    </aside>
+    """
+def page(title, active, main_html):
+    return f"""

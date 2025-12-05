@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CampusConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --primary-color: #184E77;
+            --secondary-color: #1A759F;
+        }
+
+        body {
+            background: linear-gradient(135deg, #184E77 0%, #1A759F 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            max-width: 900px;
+            width: 90%;
+        }
+
+        .login-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .login-form-section {
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-info-section {
+            background: linear-gradient(135deg, #184E77 0%, #1A759F 100%);
+            color: white;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-logo {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .login-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #184E77;
+        }
+
+        .login-info-section .login-title {
+            color: white;
+        }
+
+        .login-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .login-info-section .login-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #184E77;
+            box-shadow: 0 0 0 3px rgba(24, 78, 119, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-group a {
+            color: #184E77;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .checkbox-group a:hover {
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #184E77 0%, #1A759F 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(24, 78, 119, 0.3);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #999;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            margin: 0 12px;
+            font-size: 14px;
+        }
+
+        .oauth-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .oauth-btn {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .oauth-btn:hover {
+            border-color: #184E77;
+            background: #f8f9fa;
+        }
+
+        .signup-link {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .signup-link a {
+            color: #184E77;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .info-item-icon {
+            font-size: 32px;
+            margin-right: 20px;
+        }
+
+        .info-item-text h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .info-item-text p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .error-message {
+            color: #dc2626;
+            background: #fee2e2;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .success-message {
+            color: #059669;
+            background: #d1fae5;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #184E77;
+        }
+
+        @media (max-width: 768px) {
+            .login-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .login-info-section {
+                display: none;
+            }
+
+            .login-form-section {
+                padding: 40px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-wrapper">
+            <!-- Login Form Section -->
+            <div class="login-form-section">
+                <div class="login-logo">🎓</div>
+                <h1 class="login-title">Welcome Back</h1>
+                <p class="login-subtitle">Sign in to access your CampusConnect account</p>
+
+                <div class="error-message" id="errorMessage"></div>
+                <div class="success-message" id="successMessage"></div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <label style="display: flex; align-items: center; margin: 0; cursor: pointer;">
+                            <input type="checkbox" id="rememberMe" name="rememberMe">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="#forgot-password">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="login-btn">Sign In</button>
+
+                    <div class="loading" id="loading">
+                        <p>Signing in...</p>
+                    </div>
+                </form>
+
+                <div class="divider">
+                    <span>or continue with</span>
+                </div>
+
+                <div class="oauth-buttons">
+                    <button type="button" class="oauth-btn" onclick="handleGoogleLogin()">
+                        <span>🔵</span> Google
+                    </button>
+                    <button type="button" class="oauth-btn" onclick="handleGithubLogin()">
+                        <span>⚫</span> GitHub
+                    </button>
+                </div>
+
+                <p class="signup-link">
+                    Don't have an account? <a href="signup.html">Create one</a>
+                </p>
+            </div>
+
+            <!-- Info Section -->
+            <div class="login-info-section">
+                <div>
+                    <h2 style="font-size: 28px; margin-bottom: 40px; font-weight: bold;">Why Join CampusConnect?</h2>
+
+                    <div class="info-item">
+                        <div class="info-item-icon">👨‍🏫</div>
+                        <div class="info-item-text">
+                            <h3>Expert Mentors</h3>
+                            <p>Learn from industry professionals and experienced mentors</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-item-icon">🚀</div>
+                        <div class="info-item-text">
+                            <h3>Real Projects</h3>
+                            <p>Build portfolio-worthy projects and gain practical experience</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-item-icon">🏆</div>
+                        <div class="info-item-text">
+                            <h3>Community</h3>
+                            <p>Connect with students and professionals from top colleges</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', handleLogin);
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const errorDiv = document.getElementById('errorMessage');
+            const loadingDiv = document.getElementById('loading');
+            
+            errorDiv.style.display = 'none';
+            loadingDiv.style.display = 'block';
+
+            try {
+                // Call authentication function from auth.js
+                const result = await authenticateUser(email, password);
+                
+                if (result.success) {
+                    // Store token
+                    localStorage.setItem('authToken', result.token);
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    
+                    if (rememberMe) {
+                        localStorage.setItem('rememberMe', 'true');
+                    }
+                    
+                    // Redirect to home page
+                    window.location.href = 'index.html';
+                } else {
+                    errorDiv.textContent = result.message || 'Invalid email or password';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                errorDiv.textContent = error.message || 'An error occurred during login';
+                errorDiv.style.display = 'block';
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+
+        function handleGoogleLogin() {
+            // Initialize Google Sign-In
+            google.accounts.id.initialize({
+                client_id: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com', // Replace with your actual Google Client ID
+                callback: handleGoogleSignInSuccess
+            });
+
+            // Trigger the Google Sign-In flow
+            google.accounts.id.renderButton(
+                document.createElement('div'),
+                { theme: 'outline', size: 'large' }
+            );
+            
+            google.accounts.id.prompt((notification) => {
+                if (notification.isNotDisplayed()) {
+                    // Fallback: show One Tap popup
+                }
+            });
+
+            // Alternative: Use the One Tap popup or button click
+            setTimeout(() => {
+                const gsiButton = document.querySelector('[data-google-signin-button]');
+                if (gsiButton) {
+                    gsiButton.click();
+                } else {
+                    // Programmatically trigger Google Sign-In
+                    const googleSignInBtn = document.querySelector('[data-gsi-button]');
+                    if (googleSignInBtn) {
+                        googleSignInBtn.click();
+                    }
+                }
+            }, 100);
+        }
+
+        function handleGoogleSignInSuccess(response) {
+            try {
+                // Decode the JWT token from Google
+                const token = response.credential;
+                const payload = parseJwt(token);
+
+                // Extract user information from the JWT
+                const googleUser = {
+                    email: payload.email,
+                    name: payload.name,
+                    picture: payload.picture,
+                    googleId: payload.sub
+                };
+
+                // Register or login user with Google credentials
+                handleGoogleAuthentication(googleUser, token);
+            } catch (error) {
+                console.error('Error processing Google sign-in:', error);
+                showError('Failed to sign in with Google. Please try again.');
+            }
+        }
+
+        function handleGoogleAuthentication(googleUser, googleToken) {
+            const errorDiv = document.getElementById('errorMessage');
+            const loadingDiv = document.getElementById('loading');
+
+            loadingDiv.style.display = 'block';
+            errorDiv.style.display = 'none';
+
+            try {
+                // Check if user exists in our system
+                const users = JSON.parse(localStorage.getItem('campusConnectUsers')) || [];
+                let existingUser = users.find(u => u.email === googleUser.email);
+
+                if (!existingUser) {
+                    // Create new user with Google account
+                    const newUser = {
+                        id: 'user_' + Date.now(),
+                        email: googleUser.email,
+                        name: googleUser.name,
+                        college: 'Not Specified',
+                        avatar: googleUser.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(googleUser.name)}&background=667eea&color=fff`,
+                        googleId: googleUser.googleId,
+                        password: 'oauth_google', // OAuth users don't have passwords
+                        createdAt: new Date().toISOString()
+                    };
+
+                    users.push(newUser);
+                    localStorage.setItem('campusConnectUsers', JSON.stringify(users));
+                    existingUser = newUser;
+                }
+
+                // Generate JWT token for our system
+                const jwtAuth = new JWTAuth();
+                const authToken = jwtAuth.generateToken({
+                    id: existingUser.id,
+                    email: existingUser.email,
+                    name: existingUser.name,
+                    college: existingUser.college
+                });
+
+                // Store authentication data
+                localStorage.setItem('authToken', authToken);
+                localStorage.setItem('user', JSON.stringify(existingUser));
+                localStorage.setItem('rememberMe', 'true');
+
+                // Redirect to home page
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 500);
+            } catch (error) {
+                console.error('Authentication error:', error);
+                errorDiv.textContent = 'Failed to authenticate with Google. Please try again.';
+                errorDiv.style.display = 'block';
+            } finally {
+                loadingDiv.style.display = 'none';
+            }
+        }
+
+        // Helper function to decode JWT
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                console.error('Failed to parse JWT:', e);
+                throw new Error('Invalid Google token');
+            }
+        }
+
+        function handleGithubLogin() {
+            alert('GitHub OAuth integration coming soon! For now, use email/password login.');
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        // Check if user is already logged in
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('authToken')) {
+                window.location.href = 'index.html';
+            }
+
+            // Initialize Google Sign-In if available
+            if (typeof google !== 'undefined' && google.accounts) {
+                google.accounts.id.initialize({
+                    client_id: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+                    callback: handleGoogleSignInSuccess
+                });
+            }
+        });
+    </script>
+</body>
+</html>

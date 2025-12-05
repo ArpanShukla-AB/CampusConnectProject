@@ -1,0 +1,65 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@700&display=swap');
+      
+      .logo-text-light {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 72px;
+        font-weight: 700;
+        fill: #D4E3F0;
+        letter-spacing: 2px;
+      }
+      
+      .logo-text-dark {
+        font-family: 'Fredoka', sans-serif;
+        font-size: 72px;
+        font-weight: 700;
+        fill: #2D5A3D;
+        letter-spacing: 2px;
+      }
+      
+      .logo-accent {
+        stroke: #2D5A3D;
+        stroke-width: 4;
+        fill: none;
+        stroke-linecap: round;
+      }
+    </style>
+    
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="glow-strong">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <linearGradient id="lightGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#184E77;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1A759F;stop-opacity:0.6" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background with subtle glow -->
+  <circle cx="200" cy="150" r="160" fill="url(#lightGrad)" opacity="0.2" filter="url(#glow-strong)"/>
+  
+  <!-- CAMPUS text (light) -->
+  <text x="200" y="110" class="logo-text-light" text-anchor="middle" filter="url(#glow)">CAMPUS</text>
+  
+  <!-- CONNECT text (dark) -->
+  <text x="200" y="190" class="logo-text-dark" text-anchor="middle" filter="url(#glow)">CONNECT</text>
+  
+  <!-- Accent line (speech bubble pointer) -->
+  <path d="M 280 200 Q 310 215 330 240" class="logo-accent" filter="url(#glow-strong)"/>
+  <path d="M 330 240 L 310 235 L 315 250 Z" fill="#2D5A3D" filter="url(#glow-strong)"/>
+</svg>
